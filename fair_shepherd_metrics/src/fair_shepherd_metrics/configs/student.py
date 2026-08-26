@@ -1,0 +1,100 @@
+"""Student Performance default experiment specification."""
+
+CONFIG = {
+    "name": "Student Performance",
+    "source": "UCI Student Performance Portuguese course",
+    "target": "G3",
+    "positive_outcome": "G3 >= 10",
+    "sensitive_attributes": ("sex", "address"),
+    "split": {"type": "random", "train": 0.5, "validation": 0.2, "test": 0.3},
+    "numeric_features": (
+        "age",
+        "Medu",
+        "Fedu",
+        "traveltime",
+        "studytime",
+        "failures",
+        "famrel",
+        "freetime",
+        "goout",
+        "Dalc",
+        "Walc",
+        "health",
+        "absences",
+    ),
+    "categorical_features": (
+        "school",
+        "famsize",
+        "Pstatus",
+        "Mjob",
+        "Fjob",
+        "reason",
+        "guardian",
+        "schoolsup",
+        "famsup",
+        "paid",
+        "activities",
+        "nursery",
+        "higher",
+        "internet",
+        "romantic",
+    ),
+    "dropped_features": ("G1", "G2"),
+    "normative_features": (
+        "failures",
+        "studytime",
+        "higher",
+        "Medu",
+        "Fedu",
+        "schoolsup",
+        "absences",
+    ),
+    "proxy_features": (
+        ("guardian", -1),
+        ("Mjob", -1),
+        ("Fjob", -1),
+        ("romantic", -1),
+        ("goout", -1),
+    ),
+    "vertical_levels": (
+        ("V1: 0-Failures", "failures == 0"),
+        ("V2: 1-Failures", "failures == 1"),
+        ("V3: 2+-Failures", "failures >= 2"),
+    ),
+    "audit_groups": {
+        "sex": {
+            "Male": "sex == 'M'",
+            "Female": "sex == 'F'",
+        },
+        "address": {
+            "Urban": "address == 'U'",
+            "Rural": "address == 'R'",
+        },
+        "sex_address": {
+            "M-R": "sex == 'M' and address == 'R'",
+        },
+    },
+    "audit_pairs": (
+        ("Sex_Female_vs_Male", "sex", "Female", "Male", -1),
+        ("Addr_Rural_vs_Urban", "address", "Rural", "Urban", -1),
+    ),
+    "training_proxy_groups": {
+        "guardian_proxy": {
+            "A": "guardian == 'father'",
+            "B": "guardian == 'mother'",
+        },
+        "social_proxy": {
+            "A": "goout >= 4",
+            "B": "goout <= 2",
+        },
+        "romantic_proxy": {
+            "A": "romantic == 'yes'",
+            "B": "romantic == 'no'",
+        },
+    },
+    "training_proxy_pairs": (
+        ("P_Guardian", "guardian_proxy", "A", "B"),
+        ("P_Social", "social_proxy", "A", "B"),
+        ("P_Romantic", "romantic_proxy", "A", "B"),
+    ),
+}
